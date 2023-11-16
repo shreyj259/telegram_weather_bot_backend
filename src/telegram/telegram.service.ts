@@ -38,8 +38,14 @@ export class TelegramService {
                     const weatherData=await axios.get(`http://api.weatherapi.com/v1/current.json?key=${process.env.WEATHER_KEY}&q=${msg.text}&aqi=no`)
                     const result=weatherData.data
                     this.bot.sendMessage(user[0].chatId,`The current weather in ${result.location.name} is ${result.current.condition.text}, The temperature is ${result.current.temp_c}°C and humidity is ${result.current.humidity}.`)
+                }else{
+                    this.bot.sendMessage(user[0].chatId,"Please use the command \start to enable the bot")
                 }
             } catch (error) {
+                if(error.code==="ERR_BAD_REQUEST"){
+                    this.bot.sendMessage(msg.chat.id,"Can't find the location")
+                    return ;
+                }
                 console.log(error)
             }
         }
@@ -62,4 +68,15 @@ export class TelegramService {
             console.log(err)
         }
     }
+
+    async removeUser(userId){
+        try {
+            await this.bot.kickChatMember(userId,userId)
+            return "User Succesfully removed"
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    async 
 }
